@@ -14,5 +14,11 @@
         "psr-4": {
             "AlexeyKupershtokh\\LazyApcClassLoader\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AlexeyKupershtokh\\Example\\": "web/"
+        }
     }
+
 }

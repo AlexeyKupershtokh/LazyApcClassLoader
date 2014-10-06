@@ -41,6 +41,11 @@ class LazyApcClassLoader
      */
     protected $decorated;
 
+    /**
+     * A callback that is used to create a fallback class loader in cases of cache misses.
+     *
+     * @var callable
+     */
     protected $callback;
 
     /**
@@ -53,11 +58,10 @@ class LazyApcClassLoader
     /**
      * Constructor.
      *
-     * @param string $prefix      The APC namespace prefix to use.
-     * @param object $decorated   A class loader object that implements the findFile() method.
+     * @param string   $prefix   The APC namespace prefix to use.
+     * @param callable $callback A callback that is used to create a fallback class loader in cases of cache misses.
      *
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      *
      * @api
      */
@@ -71,18 +75,28 @@ class LazyApcClassLoader
         $this->callback = $callback;
     }
 
+    /**
+     * Init the fallback class loader.
+     *
+     * @throws \RuntimeException
+     * @param string $class
+     */
     public function initDecorated($class)
     {
         if ($this->decorated === null) {
             $this->breaker = $class;
             $decorated = call_user_func($this->callback);
             if (!method_exists($decorated, 'findFile')) {
-                throw new \InvalidArgumentException('The class finder must implement a "findFile" method.');
+                throw new \RuntimeException('The class finder must implement a "findFile" method.');
             }
             $this->decorated = $decorated;
         }
     }
 
+    /**
+     * Return a class name that caused the fallback class loader initialization.
+     * @return string
+     */
     public function getBreaker()
     {
         return $this->breaker;
@@ -91,7 +105,7 @@ class LazyApcClassLoader
     /**
      * Registers this instance as an autoloader.
      *
-     * @param bool    $prepend Whether to prepend the autoloader or not
+     * @param bool $prepend Whether to prepend the autoloader or not
      */
     public function register($prepend = false)
     {
@@ -111,7 +125,7 @@ class LazyApcClassLoader
      *
      * @param string $class The name of the class
      *
-     * @return bool|null    True, if loaded
+     * @return bool True, if loaded
      */
     public function loadClass($class)
     {
