@@ -26,3 +26,6 @@ $loader = new \AlexeyKupershtokh\LazyApcClassLoader\LazyApcClassLoader(
 );
 $loader->register();
 ```
+Benchmark
+---------
+https://github.com/AlexeyKupershtokh/AutoLoadBenchmark
