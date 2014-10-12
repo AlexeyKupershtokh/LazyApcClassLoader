@@ -14,6 +14,22 @@ composer require alexey-kupershtokh/lazy-apc-class-loader
 
 Usage
 -----
+Just add the following post-autoload-dump script to your compose.json:
+```json
+    "scripts": {
+        "post-autoload-dump": [
+            "AlexeyKupershtokh\\LazyApcClassLoader\\AutoloadGeneratorHook::post"
+        ]
+    }
+```
+Then run
+```bash
+composer dumpautoload
+```
+And it's done!
+
+Advanced Usage
+--------------
 ```php
 require_once(__DIR__ . '/vendor/alexey-kupershtokh/lazy-apc-class-loader/src/LazyApcClassLoader.php');
 
